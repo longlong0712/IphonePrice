@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+<h1>Iphone歷年價格查詢</h1>
+<form>
+    <fieldset>
+        <legend>年份</legend>
+        <select name="year">
+            <option value="">選擇年份</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+        </select>
+    </fieldset>
+
+    <fieldset>
+        <legend>價錢</legend>
+        <div class="price-output" id="price-output">請選擇年份</div>
+    </fieldset>
+</form>
+
+<script>
+    document.querySelector('select').addEventListener('change', function() {
+        var year = this.value;
+        if (year === "") {
+            document.getElementById('price-output').textContent = '請選擇年份';
+            return;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/price', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var priceOutput = document.getElementById('price-output');
+                if (response.price) {
+                    priceOutput.textContent = '價格: $' + response.price + '美元'
+                } else {
+                    priceOutput.textContent = '查無資料';
+                }
+            }
+        };
+        xhr.send('year=' + year);
+    });
+</script>
+
+</body>
+
+</html>
